@@ -17,8 +17,8 @@ class SuccessfulResponse(BaseModel):
 class ShopUnitImport(BaseModel):
     id: UUID
     name: str
-    parentId: UUID = None
-    price: Union[int, None] = Field(gt=0)
+    parentId: Union[UUID, None]= None
+    price: Union[int, None] = Field(gt=0,lt=2147483647)# TODO меньше 
     type: ShopUnitType
 
     @root_validator

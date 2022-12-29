@@ -9,6 +9,12 @@ def format_nodes(raw_records: list[Record]) -> BaseModel:
     items = format_dict(format_records(raw_records))
     return items
 
+def format_row_update(raw_record: Record):
+    new_model = ShopUnitStatisticUnit(id=raw_record["id"], name=raw_record["name_item"],type=raw_record["shop_type"],
+                    date=raw_record["date_update"].replace(tzinfo=None).isoformat(timespec="milliseconds") + "Z",
+                    price=raw_record["price"],
+                    parentId=raw_record["parent_id"])
+    return new_model.parentId, new_model
 
 def format_sales(raw_records: list[Record], model: Type[ShopUnitStatisticUnit]) -> ShopUnitStatisticResponse:
     if not raw_records:

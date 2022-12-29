@@ -8,7 +8,7 @@ from app.models import (
     ShopUnitStatisticUnit,
     SuccessfulResponse,
 )
-from app.queries.imports import add_items_sql, delete_item_sql, get_nodes_sql, get_sales_sql
+from app.queries.imports import add_items_sql, delete_item_sql, get_nodes_sql, get_sales_sql, get_statistic_sql
 from app.utils import format_nodes, format_sales
 from app.limiter import limiter
 
@@ -44,4 +44,14 @@ async def get_item(
 @limiter.limit(limit_value="100/minute")
 async def get_sales(request: Request, date: datetime = Query(description="Текущее время")):
     item = format_sales(await get_sales_sql(date), ShopUnitStatisticUnit)
+    return item
+
+
+@imports_router.get("/node/{id}/statistic", response_model=ShopUnitStatisticResponse, status_code=status.HTTP_200_OK)
+@limiter.limit(limit_value="100/minute")
+async def get_statistic(request: Request,
+                    id: UUID = Path(description="Идентификатор", example="3fa85f64-5717-4562-b3fc-2c963f66a333"),
+                    dateStart: datetime = Query(description="Текущее время"),
+                    dateEnd: datetime = Query(description="Текущее время"),):
+    item = format_sales(await get_statistic_sql(id, dateStart, dateEnd), ShopUnitStatisticUnit)
     return item
